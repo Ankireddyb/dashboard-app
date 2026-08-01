@@ -1,0 +1,27 @@
+name: Path Filters
+on:
+    push: 
+     branches: 
+        - main
+     paths: 
+      - 'src/**' # Any file in the src folder
+      - 'pom.xml' # pom.xml change
+      - Dockerfile
+
+jobs:
+  show-information:
+    name: push trigger info
+    runs-on: ubuntu-latest
+    steps:
+        - name: Show Trigger Information 
+          run: |
+           echo "========================="
+           echo "Details of my workflow"
+           echo "Event Name is :::       ${{github.event_name}}"
+           echo "Repository Name is :::  ${{github.repository}}"
+           echo "Branch Name is ::::     ${{github.ref_name}}"
+           echo "Actor is :::::          ${{github.actor}}"
+           echo "Commit SHA is :::::     ${{github.sha}}  "
+            
+
+ 
