@@ -1,0 +1,37 @@
+name: Rinners-Specs
+on:
+    workflow_dispatch:
+jobs:
+    runners-specs: 
+        runs-on: ubuntu-latest
+        steps:
+            - name: Runner Context info 
+              run: |
+               echo "========================================================"
+               echo "Runner Context Info "
+               echo "OS:               ${{runner.os}}"
+               echo "Architecture :    ${{runner.arch}}"
+               echo "Workspace :       ${{runner.workspace}}"
+
+            - name: Machine Specifications 
+              run: |
+                echo "========================================================="
+                echo "Machine Specifications "
+                echo "CPU Architecture: $(uname -m)"
+                echo "CPU Cores:        $(nproc)"
+                echo "CPU Model:        $(lscpu | grep 'Model name' | cut -d':' -f2 | xargs)"
+                echo "Total RAM:        $(free -h | awk '/^Mem:/ {print $2}')"
+                echo "Free RAM:         $(free -h | awk '/^Mem:/ {print $4}')"
+                echo "Disk Space:       $(df -h / | awk 'NR==2 {print $2 " total, " $4 " available"}')"
+                echo "OS / Kernel:      $(uname -s -r)"
+                echo "========================================================="
+            - name: Pre Installed Softwares
+              run: | 
+               echo "========================================================"
+               echo "Pre Installed Softwares "
+               echo "Docker version $(docker --version)"
+               echo "Jave version $(java --version)"
+               echo "Node verdsion $(node --version)"
+
+
+
