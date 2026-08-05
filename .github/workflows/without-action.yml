@@ -23,7 +23,7 @@ jobs:
                export JAVA_HOME=$PWD/jdk-21-0.2
                export PATH=$JAVA_HOME/bin:$PATH
                echo "JAVA_HOME=$PWD/jdk-21.0.2">> $GITHUB_ENV
-               echo "$PWD/jdk-21-0.2/bin" >> GITHUB_PATH
+               echo "$PWD/jdk-21-0.2/bin" >> $GITHUB_PATH
                echo "JAVA installed successfully "
             - name: Verify Java Installation 
               run: |
