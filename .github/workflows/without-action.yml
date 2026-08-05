@@ -8,13 +8,24 @@ jobs:
             - name: Manually cloning the repo 
               run: | 
                echo "Manually cloning the repo :::"
-               git clone https://github.com/${{github.repository}}.git
-               echo "List of files in the repository after cloning the repo "
+               git clone https://github.com/${{github.repository}}.git .
+               echo "Repository Cloned Successfully  "
                ls -la 
-               echo "=========================================================="
-               echo "Print current working directory:"
-               pwd
+            - name: Java Default Version
+              run: java -version || echo "Java is not installed "
+            - name: Manually Install Java 21
+              run: |
+               echo "Downloading Java 21 ........"
+               wget -q https://download.java.net/java/GA/jdk21.0.2/f2283984656d49d69e91c558476027ac/13/GPL/openjdk-21.0.2_linux-x64_bin.tar.gz
+               echo "Extracting the java ......"
+               tar -xzf openjdk-21.0.2_linux-x64_bin.tar.gz
+               echo "Setting up Java_HOME"
+               export JAVA_HOME=$PWD/jdk-21-0.2
+               export PATH=$JAVA_HOME/bin:$PATH
+               echo "JAVA_HOME=$PWD/jdk-21.0.2">> $GITHUB_ENV
+               echo "$PWD/jdk-21-0.2/bin" >> GITHUB_PATH
+               echo "JAVA installed successfully "
             - name: Verify Java Installation 
               run: |
-               echo "Verifying the java installation :::"
-               java -version 
+               java -version
+               echo "JAVA_HOME:$JAVA_HOME"
