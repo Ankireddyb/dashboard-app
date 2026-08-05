@@ -14,3 +14,7 @@ jobs:
                echo "=========================================================="
                echo "Print current working directory:"
                pwd
+            - name: Verify Java Installation 
+              run: |
+               echo "Verifying the java installation :::"
+               java -version 
