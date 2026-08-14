@@ -1,0 +1,23 @@
+name: 09-03-status-check-function
+on:
+    workflow_dispatch:
+jobs:
+    status-check-functions-demo:
+        runs-on: ubuntu-latest
+        steps:
+            - name: Step-1 Build 
+              run: |
+               echo "Building the application"
+               exit 1
+            - name: Step-2 Duccess 
+              if: ${{success()}}
+              run: echo "Previous steps are success "
+            - name: Step-3 Failure
+              if: ${{failure()}}
+              run: echo "Previous Steps has failed"
+            - name: Step-4 Always
+              if: ${{always()}}
+              run:  echo " I will run irrespective of success or failure"
+            - name: Step-5 Cancelled 
+              if: ${{cancelled()}}
+              run: echo "Workflow was cancelled::"
