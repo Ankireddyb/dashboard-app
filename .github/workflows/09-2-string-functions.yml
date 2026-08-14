@@ -13,3 +13,6 @@ jobs:
                echo "ref contains main   : ${{contains(github.ref,'main')}}"
                echo "repo contains dashboard ::: ${{contains(github.repository,'dashboard')}}"
                echo "actor contains a ::::: ${{contains(github.actor,'a')}}"
+            - name: Use contains() in condition
+              if: contains(github.repository,'new')
+              run: echo "Repo contains new "
