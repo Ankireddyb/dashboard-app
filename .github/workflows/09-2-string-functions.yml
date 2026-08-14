@@ -13,6 +13,28 @@ jobs:
                echo "ref contains main   : ${{contains(github.ref,'main')}}"
                echo "repo contains dashboard ::: ${{contains(github.repository,'dashboard')}}"
                echo "actor contains a ::::: ${{contains(github.actor,'a')}}"
+               echo "==================================================="
             - name: Use contains() in condition
               if: contains(github.repository,'new')
               run: echo "Repo contains new "
+            - name: startsWith()
+              run: |
+               echo "============================"
+               echo "=========startsWith() ================="
+               echo "==============================="
+               echo "ref_name starts with ::::: ${{startsWith(github.ref_name,'mast')}}"
+               echo "==============================================================="
+            - name: endsWith()
+              run: |
+               echo "======================="
+               echo "=========endsWith()============"
+               echo "================================"
+               echo "repo name ends with app :: ${{endsWith(github.repository,'app')}}"
+               echo "================================================================="
+            - name: format()
+              run: |
+               echo "================================"
+               echo "========== format() ============"
+               echo "================================="
+               echo "Workflow Triggered by Ankireddyb , branch is main and run run number "
+               echo "${{format('Workflow Triggered by :  {0} and branch is : {1} and the run number is :{2}' ,github.actor,github.ref_name,github.run_number)}}"
