@@ -36,5 +36,5 @@ jobs:
                echo "================================"
                echo "========== format() ============"
                echo "================================="
-               echo "Workflow Triggered by Ankireddyb , branch is main and run run number "
+               #echo "Workflow Triggered by Ankireddyb , branch is main and run run number "
                echo "${{format('Workflow Triggered by :  {0} and branch is : {1} and the run number is :{2}' ,github.actor,github.ref_name,github.run_number)}}"
