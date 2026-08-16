@@ -1,0 +1,39 @@
+name: 10-2-artifacts-between-jobs
+on:
+    workflow_dispatch:
+jobs:
+    build:
+        runs-on: ubuntu-latest
+        steps:
+            - name: Checkout the Code
+              uses: actions/checkout@v3
+            - name: Install Java 21
+              uses: actions/setup-java@v4
+              with:
+                java-version: 21
+                distribution: temurin
+                cache: maven
+            - name: Build and Package
+              run: mvn package -DskipTests
+            - name: Upload Build Artifact
+              uses: actions/upload-artifact@v4
+              with:
+                name: build-artifact
+                path: target/devops-dashboard-1.0.0.jar
+                retention-days: 7
+    deploy:
+        runs-on: ubuntu-latest
+        needs: build
+        steps: 
+            - name: Download the JAR Artifact
+              uses: actions/download-artifact@v8
+              with:
+                name: build-artifact # same as line no#21 
+                path: ./download-jar
+            - name: Verify Downloaded Artifact
+              run: ls -ls ./download-jar
+            - name: Simulate the Deployment 
+              run: |
+                echo "Deploying to dev environment "
+                echo "*************** Deployment completed ************"
+    
