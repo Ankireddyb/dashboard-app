@@ -15,7 +15,7 @@ jobs:
               uses: actions/setup-java@v4
               with:
                 java-version: ${{matrix.java-version}}
-                distribution: 
+                distribution: temurin
                 cache: maven      # ~/.m2 artifacts HASH 
             - name : mvn test
               run: mvn test
