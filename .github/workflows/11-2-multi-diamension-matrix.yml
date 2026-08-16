@@ -14,6 +14,10 @@ jobs:
                 # remove java 17 on windows from the matrix 
                   - java-version: '17'
                     os: 'windows-latest'
+                include:
+                  - java-version: '21'
+                    os: 'ubuntu-latest'
+                    is-primary: true
         name: Test- ${{matrix.java-version}} on ${{matrix.os}}
         runs-on: ${{matrix.os}}
         steps:
@@ -26,6 +30,13 @@ jobs:
              distribution: temurin
              cache: maven
          - run: mvn test
+           name: Running MVN Tests
+         - name: Primary Combination Maker
+           if: matrix.is-primary == true
+           run: |
+           
+            echo "This is the Primary test combination "
+            echo "Java ${{matrix.java-version}} on ${{matrix.os}}"
          - name: Show Matrix Combination
            run: |
              echo "Java version ${{matrix.java-version}}"
