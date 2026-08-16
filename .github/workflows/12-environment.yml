@@ -1,0 +1,35 @@
+name: Environment
+on:
+    workflow_dispatch:
+jobs:
+    deploy-dev:
+        name: Deploy to Development
+        runs-on: ubuntu-latest
+        environment: 
+            name: development
+            url: https://dev.i27academy.com
+        steps:
+          - run : |
+              echo "Deploying to development Environment "
+    deploy-staging:
+        name: Deploy to Staging 
+        runs-on: ubuntu-latest
+        needs: deploy-dev
+        environment: 
+            name: staging
+            url: https://staging.i27academy.com
+        steps:
+            - run: |
+               echo "Deploying to Staging Environment "
+    deploy-production:
+        name: Deploy to Production
+        runs-on: ubuntu-latest
+        needs: deploy-staging
+        environment: 
+            name: production
+            url: https://i27acdemy.com
+        steps: 
+            - run: |
+               echo " Deploying to Production Environemnt " 
+
+
