@@ -14,7 +14,7 @@ jobs:
                 # remove java 17 on windows from the matrix 
                   - java-version: '17'
                     os: 'windows-latest'
-        name: Test- ${{matrix.java-version}}
+        name: Test- ${{matrix.java-version}} on ${{matrix.os}}
         runs-on: ${{matrix.os}}
         steps:
          - name: Chckout The Source Code
