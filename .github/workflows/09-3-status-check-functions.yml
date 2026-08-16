@@ -9,7 +9,7 @@ jobs:
               run: |
                echo "Building the application"
                exit 1
-            - name: Step-2 Duccess 
+            - name: Step-2 Success 
               if: ${{success()}}
               run: echo "Previous steps are success "
             - name: Step-3 Failure
