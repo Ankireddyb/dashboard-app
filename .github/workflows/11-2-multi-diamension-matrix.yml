@@ -4,7 +4,7 @@ on:
 jobs:
     test:
         strategy:
-            fail-fast: false 
+            #fail-fast: false 
             #max-parallel: 1
             #max-parallel default is to run all matrix job at the same time 
             matrix:
@@ -21,7 +21,7 @@ jobs:
              java-version: ${{matrix.java-version}}
              distribution: temurin
              cache: maven
-             run: mvn test
+         - run: mvn test
          - name: Show Matrix Combination
            run: |
              echo "Java version ${{matrix.java-version}}"
