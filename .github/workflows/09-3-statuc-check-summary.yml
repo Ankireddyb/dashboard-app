@@ -10,7 +10,7 @@ jobs:
             - name: Step 2- Fails Intentionally 
               run: |
                echo "This step will fail"
-               eit 1
+               exit 1
             - name : Step 3- Success 
               if: success()
               run: |
@@ -43,4 +43,4 @@ jobs:
                echo "| ----| ------| "  >> $GITHUB_STEP_SUMMARY
                echo "| status-functions-demo | ${{needs.status-functions-demo.result}}|" >> $GITHUB_STEP_SUMMARY
                echo "| notify-on-failure | ${{needs.notify-on-failure.result}}|" >> $GITHUB_STEP_SUMMARY
-               
+
