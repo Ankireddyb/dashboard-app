@@ -1,0 +1,25 @@
+name: 11-1-Matrix-Single-Diamension
+on:
+    workflow_dispatch:
+jobs:
+    tests:
+        strategy:
+          matrix:
+            java-version: ['17','21']
+        name: Test - Java ${{matrix.java-version}}
+        runs-on: ubuntu-latest
+        steps:
+            - name: Checkout the Source code 
+              uses: actions/checkout@v3
+            - name: Setu Java ${{matrix.java-version}}
+              uses: actions/setup-java@v4
+              with:
+                java-version: ${{matrix.java-version}}
+                distribution: 
+                cache: maven      # ~/.m2 artifacts HASH 
+            - name : mvn test
+              run: mvn test
+            - name : Print matrix value 
+              run: |
+               echo "Running on Java ${{matrix.java-version}}"
+
