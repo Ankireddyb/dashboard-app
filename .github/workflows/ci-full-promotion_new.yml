@@ -62,9 +62,8 @@ jobs:
               .
         - name: Push Docker Image 
           run: |
-            echo "-------------- Pushing Docker Image --------------"
-            docker push \
-                 ${{env.DOCKER_IMAGE_NAME}}: ${{needs.build.outputs.image-tag}}
+           echo "-------------- Pushing Docker Image --------------"
+           docker push "${{ env.DOCKER_IMAGE_NAME }}:${{ needs.build.outputs.image-tag }}"
         - name: Docker Image Details 
           run: |
             echo "------------------------------"
