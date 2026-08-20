@@ -41,7 +41,7 @@ jobs:
                echo "value=${{github.sha}}" >> $GITHUB_OUTPUT
 
 
-
+    # --------------- Job 2: Docker Build and Push  ---------------           
     docker-build-push:
       name: Docker Build and Push 
       runs-on: ubuntu-latest
@@ -73,6 +73,62 @@ jobs:
             echo "Tag is           : ${{needs.build.outputs.image-tag}}"
             echo "Full Image is    :  ${{env.DOCKER_IMAGE_NAME}}: ${{needs.build.outputs.image-tag}}"
             echo "-----------------------------------------"
-          
+    #-----------------   Job 3 : Deploy to Dev(Automatic)
+    deploy-dev:
+      name: Deploy to Dev
+      runs-on: ubuntu-latest
+      needs:   [build,docker-build-push]
+      environment:
+        name: development
+        url: https://dev.jasmikatech.com
+      steps: 
+        - name: Deploy to Development
+          run: |
+           echo "--------------------------"
+           echo "Deploying to Development Environment "
+           echo "Deployed ✅"
+    # ---------------------------- Job 4: Deploy to Stage (Automatic)
+    deploy-stage:
+      name: Deploy to Stage
+      runs-on: ubuntu-latest
+      needs: [build, docker-build-push,deploy-dev]
+      environment:
+        name: staging
+        url: https://stage.jasmikatech.com
+      steps:
+        - name : Deploy to Stagging 
+          run: |
+           echo "----------------------------"
+           echo "Deploying to Staging Environment "
+           echo "Deployed ✅"
+    #----------------------------- Job 5: Deploy to Production (Manually , Required Approval ) -------------
+    deploy-prod:
+      name: Deploy to Prod
+      runs-on: ubuntu-latest
+      needs: [build, docker-build-push,deploy-dev,deploy-stage] 
+      environment:
+        name: production
+        url: https://jasmikatech.com
+      steps:
+        - name: Deploy to Prod
+          run: |
+           echo "-----------------------------" 
+           echo "Deploying to Production Evironment  "
+           echo "Deployed ✅"
+    #---------------------------- Job 6: Summary Job , Always run --------------------
+    summary: 
+      name: Deployment summary 
+      runs-on: ubuntu-latest
+      needs: [build, docker-build-push,deploy-dev,deploy-stage,deploy-prod] 
+      if: always()
+      steps:
+        - name: Overall Summary 
+          run: |
+           echo "## Deployment Summary " >> $GITHUB_STEP_SUMMARY
+           echo "| Environment | Status | URl " >> $GITHUB_STEP_SUMMARY
+           echo "|------| ------| -----| ">> $GITHUB_STEP_SUMMARY
+           echo "|Development| ${{needs.deploy-dev.result}}|https://dev.jasmikatech.com">> $GITHUB_STEP_SUMMARY
+           echo "|Stagging| ${{needs.deploy-stage.result}}|https://stage.jasmikatech.com">> $GITHUB_STEP_SUMMARY
+           echo "|Production| ${{needs.deploy-prod.result}}|https://jasmikatech.com">> $GITHUB_STEP_SUMMARY
 
 
