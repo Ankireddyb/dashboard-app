@@ -1,74 +1,71 @@
-# This action.yml will have 5 sections
-# name:           what is this action called 
-# description:    What it does 
-# inputs:         What values this action accepts (OPTIONAL)
-# outputs:        What values this action returns (OPTIONAL)
-# runson:         how it executes (execution logic )
-
-# ==================== Creating Composite Action =======================
 name: Java Build Action
 description: |
- Composite Action for jasmikatech.com for Java Services. 
- Handles checkout , java setup and maven build .
- Eliminates repeated steps across workflows .
+  Composite Action for jasmikatech.com for Java Services. 
+  Handles checkout , java setup and maven build .
+  Eliminates repeated steps across workflows .
+
 inputs:
- java-version:
-  description: Java version to use
-  required: false
-  default: 21
- distribution:
-  description: Java distribution
-  required: false
-  default: temurin
- run-tests:
-  description: Run Tests before building (true / false)
-  required: false
-  default: 'true'
- working-directory:
-  description: Directory to run maven commands in 
-  required: false
-  default: '.'
+  java-version:
+    description: Java version to use
+    required: false
+    default: '21'
+  distribution:
+    description: Java distribution
+    required: false
+    default: temurin
+  run-tests:
+    description: Run Tests before building (true / false)
+    required: false
+    default: 'true'
+  working-directory:
+    description: Directory to run maven commands in 
+    required: false
+    default: '.'
+
 outputs:
   jar-path:
-   description: Path to the built jar file 
-   value: ${{steps.build.outputs.jar-path}}
+    description: Path to the built jar file 
+    value: ${{ steps.build.outputs.jar-path }}
   test-result:
-   description: Result of the test run - passed or skipped
-   value: ${{steps.test.outputs.result}}
+    description: Result of the test run - passed or skipped
+    value: ${{ steps.test.outputs.result }}
 
 runs:
-  using: composite   # Mandatory 
+  using: composite
   steps:
-     - name: Setup Java ${{inputs.java-version}}
-       uses: actions/setup-java@v4
-       with:
-        java-version: ${{inputs.java-version}}
-        distribution: ${{inputs.distribution}}
+    - name: Checkout repository
+      uses: actions/checkout@v4
+
+    - name: Setup Java ${{ inputs.java-version }}
+      uses: actions/setup-java@v4
+      with:
+        java-version: ${{ inputs.java-version }}
+        distribution: ${{ inputs.distribution }}
         cache: maven
-     - name: Run tests
-       id: test
-       if: inputs.run-tests == 'true'
-       shell: bash   # Required in composite action 
-       working-directory: ${{inputs.working-directory}}
-       run: | 
+
+    - name: Run tests
+      id: test
+      if: ${{ inputs.run-tests == 'true' }}
+      shell: bash
+      working-directory: ${{ inputs.working-directory }}
+      run: | 
         mvn test
-        echo "result=passed">> $GIYHUB_OUTPUT
-     - name: set test skipped output
-       id: tests
-       if: inputs.run-tests !='true'
-       shell: bash
-       run: echo "result=skipped" >> $GIYHUB_OUTPUT
-     - name: Build Jar
-       id: build
-       shell: bash
-       working-directory: ${{inputs.working-directory}}
-       run: |
+        echo "result=passed" >> $GITHUB_OUTPUT
+
+    - name: Set test skipped output
+      id: test_skipped
+      if: ${{ inputs.run-tests != 'true' }}
+      shell: bash
+      run: |
+        echo "result=skipped" >> $GITHUB_OUTPUT
+
+    - name: Build Jar
+      id: build
+      shell: bash
+      working-directory: ${{ inputs.working-directory }}
+      run: |
         mvn package -DskipTests
-        JAR=$(find target -name "*.jar" | head -1 )
-        echo "jar-path=$JAR">> $GIYHUB_OUTPUT
+        JAR=$(find target -name "*.jar" | head -1)
+        echo "jar-path=$JAR" >> $GITHUB_OUTPUT
         echo "Packaging done !!!"
         echo "Built Jar: $JAR"
-
-
-
-
