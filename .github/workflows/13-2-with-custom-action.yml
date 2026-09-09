@@ -1,0 +1,46 @@
+name: 13-2-With-Composite-Action
+# Same workflow as 13-1-without-custom-actions, but using composite actions 
+on: 
+    workflow_dispatch:
+        inputs:
+          java-version:
+            description: Java version to use
+            type: choice
+            options:
+              - 21
+              - 17
+            default: '21'
+          run-tests:
+            description: Run Tests ?
+            type: boolean
+            default: true
+jobs:
+    test: 
+        name: test
+        runs-on: ubuntu-latest
+        steps:
+            - name: Checkout Code 
+              uses: actions/checkout@v3
+            - name: Build and Test  
+              uses: ./.github/actions/java-build
+              with:
+                java-version: ${{inputs.java-version}}
+                run-tests: ${{inputs.run-tests}}
+    build:
+        name: Build
+        runs-on: ubuntu-latest
+        steps:
+          - name: Checkout Code
+            uses: actions/checkout@v3
+          - name: Build Jar 
+            uses: ./.github/actions/java-action
+            id: build
+            with:
+                java-version: ${{inputs.java-version}}
+                run-tests: ${{inputs.run-tests}}
+          - name: Show Build Output
+            run: |
+             echo "JAR Path : ${{steps.build.outputs.jar-path}}"
+             echo "Test Results: ${{steps.build.outputs.test-result}}"
+
+  
