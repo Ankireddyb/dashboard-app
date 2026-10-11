@@ -69,3 +69,13 @@ runs:
         echo "jar-path=$JAR" >> $GITHUB_OUTPUT
         echo "Packaging done !!!"
         echo "Built Jar: $JAR"
+
+
+#=============================================================
+# KEY RULES for Compiste actions :
+# 1. shell: bash is required on every run : step 
+# unlike regular workflows , shell is not inherited 
+# 2. inputs.* accesses inputs defined above 
+# 3. outputs.value must point to a step output 
+# --> step mush have id: for this to work 
+# 4 . using: composite - always this for step-based actions 

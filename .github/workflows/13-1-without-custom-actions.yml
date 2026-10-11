@@ -40,8 +40,8 @@ jobs:
           - name: Build Jar 
             run: mavn package -DskipTests
           - name: Upload Jar 
-            uses: actions/upload-artifact@v4.  # Repeated 
+            uses: actions/upload-artifact@v4  # Repeated 
             with:
                name: devops-dashboard-jar
-               path: target/evops-dashboard-1.0.0.jar
+               path: target/devops-dashboard-1.0.0.jar
                retention-days: 7
