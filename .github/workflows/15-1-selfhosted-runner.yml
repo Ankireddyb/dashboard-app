@@ -1,0 +1,27 @@
+name: 15-1-selfhosted-runner
+on:
+    workflow_dispatch:
+jobs:
+    verify-runner:
+        name: Verify Self-Hosted Runner
+        # any runner can be picked up
+        runs-on: gcp
+        #runs-on: [self-hosted,gcp,ubuntu] # and condition 
+        steps:
+            - name: Print Runner information 
+              run: |
+                echo "================================"
+                echo "SELF_HOSTED RUNNER INFORMATION"
+                echo "Runner OS  : ${{runner.os}}"
+                echo "Hostname   : $(hostname)"
+                echo "User       : $(whoami)"
+                echo "Working dir: $(pwd) "
+                echo "IP Address :$(hostname -i )"
+            - name: Check Installed Tools
+              run: |
+               echo "========================"
+               echo "INSTALLED TOOLS "
+               echo "==========================="
+               echo "Java     : $(java -version 2>&1) | head -1 "
+               echo "Docker   : $(docker --version)"
+               echo "Maven    : $(mvn --version 2>1) | head -1 "
