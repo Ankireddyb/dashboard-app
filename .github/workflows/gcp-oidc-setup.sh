@@ -16,16 +16,16 @@
 # ── CONFIGURATION — update these values before running ───────
 
 # GCP project where resources will be created
-export PROJECT_ID="i27learn-project"
+export PROJECT_ID="jasmitha-dbs-payments"
 
 # GitHub organization or username
-export GITHUB_ORG="devopswithcloud"
+export GITHUB_ORG="Ankireddyb"
 
 # GitHub repository name (must be exact)
-export GITHUB_REPO="i27-dashboard-b10"
+export GITHUB_REPO="dashboard-app"
 
 # Service account name — identifies what this SA is for
-export SA_NAME="i27academy-github-actions-sa"
+export SA_NAME="jasmitha-github-actions-sa"
 
 # Workload identity pool ID — must be unique in the project
 export POOL_ID="github-actions-pool"
