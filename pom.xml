@@ -48,17 +48,17 @@
         </dependency>
 
         <!-- PostgreSQL driver (production) -->
-        <dependency>
+        <!--<dependency>
             <groupId>org.postgresql</groupId>
             <artifactId>postgresql</artifactId>
             <scope>runtime</scope>
-        </dependency>
+        </dependency>-->
 
         <!-- H2 in-memory DB (tests only) -->
         <dependency>
             <groupId>com.h2database</groupId>
             <artifactId>h2</artifactId>
-            <scope>test</scope>
+            <scope>runtime</scope>
         </dependency>
 
         <!-- Testing -->
