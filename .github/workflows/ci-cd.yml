@@ -28,12 +28,12 @@ on:
         - 'Dockerfile'
     workflow_dispatch:
 env:
-  PROJECT_ID:jasmitha-dbs-payments
-  REGION:us-central1
-  GAR_REPO:dashboard-app
-  IMAGE_NAME:dashboard-app
-  SERVICE_NAME:dashboard-app
-  APP_PORT:8000
+  PROJECT_ID: jasmitha-dbs-payments
+  REGION: us-central1
+  GAR_REPO: dashboard-app
+  IMAGE_NAME: dashboard-app
+  SERVICE_NAME: dashboard-app
+  APP_PORT: "8000"
 permissions: 
     contents: read
     id-token: write # Required for OIDC authentication to GCP 
