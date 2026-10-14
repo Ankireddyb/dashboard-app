@@ -88,9 +88,10 @@ jobs:
           workload_identity_provider: ${{ secrets.GCP_WORKLOAD_IDENTITY_PROVIDER }}
           service_account: ${{ secrets.GCP_SERVICE_ACCOUNT }}
 
-      - name: Configure Docker for Artifact Registry 
+      # Explicitly log into Artifact Registry using the OIDC token (fixes permission/push issues)
+      - name: Login to Artifact Registry
         run: |
-          gcloud auth configure-docker ${{ env.REGION }}-docker.pkg.dev --quiet
+          gcloud auth print-access-token | docker login -u oauth2accesstoken --password-stdin https://${{ env.REGION }}-docker.pkg.dev
 
       - name: Set full image name
         id: image
@@ -108,17 +109,86 @@ jobs:
           docker push ${{ steps.image.outputs.value }}
           echo "Image pushed : ${{ steps.image.outputs.value }} ✅"
 
-# # ---------------------- Job 3: Deploy to Dev (Automatic) -------------------- #
-#   deploy-to-dev:
-#     name: Deploy to Dev
-#     runs-on: ubuntu-latest
+# ---------------------- Job 3: Deploy to Dev (Automatic) -------------------- #
+  deploy-to-dev:
+    name: Deploy to Dev
+    runs-on: ubuntu-latest
+    needs: [build-test, docker-build-push]
+    environment:
+      name: development
+    permissions:
+      contents: read
+      id-token: write
+    steps:
+      - name: Authenticate to Google Cloud
+        uses: google-github-actions/auth@v2
+        with:
+          workload_identity_provider: ${{ secrets.GCP_WORKLOAD_IDENTITY_PROVIDER }}
+          service_account: ${{ secrets.GCP_SERVICE_ACCOUNT }}
 
-# # -----------------------Job 4: Deploy to Stage (Automatic )------------------ #
-#   deploy-to-stage:
-#     name: Deploy to Stage 
-#     runs-on: ubuntu-latest
+      - name: Deploy to Cloud Run (Dev)
+        run: |
+          gcloud run deploy ${{ env.SERVICE_NAME }}-dev \
+            --image=${{ needs.docker-build-push.outputs.full-image }} \
+            --region=${{ env.REGION }} \
+            --project=${{ env.PROJECT_ID }} \
+            --platform=managed \
+            --port=${{ env.APP_PORT }} \
+            --allow-unauthenticated \
+            --quiet
 
-# # ----------------------- Job 5: Deploy to Prod () --------------------------- #
-#   deploy-to-production:
-#     name:  Deploy to Prod 
-#     runs-on: ubuntu-latest
+# -----------------------Job 4: Deploy to Stage (Automatic) ------------------ #
+  deploy-to-stage:
+    name: Deploy to Stage 
+    runs-on: ubuntu-latest
+    needs: [build-test, docker-build-push, deploy-to-dev]
+    environment:
+      name: staging
+    permissions:
+      contents: read
+      id-token: write
+    steps:
+      - name: Authenticate to Google Cloud
+        uses: google-github-actions/auth@v2
+        with:
+          workload_identity_provider: ${{ secrets.GCP_WORKLOAD_IDENTITY_PROVIDER }}
+          service_account: ${{ secrets.GCP_SERVICE_ACCOUNT }}
+
+      - name: Deploy to Cloud Run (Stage)
+        run: |
+          gcloud run deploy ${{ env.SERVICE_NAME }}-stage \
+            --image=${{ needs.docker-build-push.outputs.full-image }} \
+            --region=${{ env.REGION }} \
+            --project=${{ env.PROJECT_ID }} \
+            --platform=managed \
+            --port=${{ env.APP_PORT }} \
+            --allow-unauthenticated \
+            --quiet
+
+# ----------------------- Job 5: Deploy to Prod (Approval Required) ----------- #
+  deploy-to-production:
+    name:  Deploy to Prod 
+    runs-on: ubuntu-latest
+    needs: [build-test, docker-build-push, deploy-to-stage]
+    environment:
+      name: production
+    permissions:
+      contents: read
+      id-token: write
+    steps:
+      - name: Authenticate to Google Cloud
+        uses: google-github-actions/auth@v2
+        with:
+          workload_identity_provider: ${{ secrets.GCP_WORKLOAD_IDENTITY_PROVIDER }}
+          service_account: ${{ secrets.GCP_SERVICE_ACCOUNT }}
+
+      - name: Deploy to Cloud Run (Prod)
+        run: |
+          gcloud run deploy ${{ env.SERVICE_NAME }}-prod \
+            --image=${{ needs.docker-build-push.outputs.full-image }} \
+            --region=${{ env.REGION }} \
+            --project=${{ env.PROJECT_ID }} \
+            --platform=managed \
+            --port=${{ env.APP_PORT }} \
+            --allow-unauthenticated \
+            --quiet
